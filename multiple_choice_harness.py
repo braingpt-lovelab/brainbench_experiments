@@ -6,9 +6,9 @@ import numpy as np
 import pandas as pd
 import torch.nn.functional as F 
 
-from utils import general_utils
 from utils import data_utils
 from utils import model_utils
+from utils import general_utils
 
 
 def forward_pass(model, tokenizer, choices):
@@ -56,37 +56,28 @@ def forward_pass(model, tokenizer, choices):
 
 @general_utils.timer
 def main(llm, abstracts_fpath):
-    """
-    Args:
-        - llm (str): HF model name
-        - abstracts_fpath (str): path to the abstracts csv file
-    """
     np.random.seed(42)
-
-    # Load dataset
-    df = pd.read_csv(abstracts_fpath)
-    original_abstracts = df["original_abstract"]
-    incorrect_abstracts = df["incorrect_abstract"]
-    # Randomly shuffle to determine which abstract is A and which is B,
-    # keep a record of the correct choice, which is used to determine
-    # later if the model's choice is correct
-    if np.random.rand() > 0.5:
-        original_abstract, incorrect_abstract = incorrect_abstract, original_abstract
-        choice_true = "B"
-    else:
-        choice_true = "A"
-
-    # Load prompt template
-    prompt_template = data_utils.read_prompt_template(llm)
 
     # Load model, tokenizer
     model, tokenizer = model_utils.load_model_and_tokenizer(llm)
-    
-    # Forward pass to get perplexities
+
+    # Load dataset
+    df = pd.read_csv(abstracts_fpath)
+    prompt_template = data_utils.read_prompt_template(llm)
+
     PPL_A_and_B = []
     true_labels = []
-    for abstract_index, (original_abstract, incorrect_abstract) \
-        in enumerate(zip(original_abstracts, incorrect_abstracts)):
+    for abstract_index, abstract in enumerate(df["combined_abstract"]):
+        original_abstract, incorrect_abstract = data_utils.extract_abstract_pair(abstract)
+
+        # Randomly shuffle to determine which abstract is A and which is B,
+        # keep a record of the correct choice, which is used to determine
+        # later if the model's choice is correct
+        if np.random.rand() > 0.5:
+            original_abstract, incorrect_abstract = incorrect_abstract, original_abstract
+            choice_true = "B"
+        else:
+            choice_true = "A"
 
         # choices is [prompt_A, prompt_B]
         # where each prompt is the question + one of the abstracts as option.
@@ -99,15 +90,11 @@ def main(llm, abstracts_fpath):
             f"*** Abstract index: {abstract_index} ***",
         )
 
+        # Forward each prompt to get nll and convert to ppl
         ppl = forward_pass(model, tokenizer, choices)
-    
-        # Append to list
         PPL_A_and_B.append(ppl)
-
-        # Append true label
         true_labels.append(0 if choice_true == "A" else 1)
-    
-    # Convert to numpy array
+
     PPL_A_and_B = np.array(PPL_A_and_B)
     true_labels = np.array(true_labels)
 
