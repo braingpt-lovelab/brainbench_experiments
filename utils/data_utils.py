@@ -1,4 +1,6 @@
 import re
+import nltk
+nltk.download('punkt')
 
 
 def read_prompt_template(llm):
@@ -35,3 +37,41 @@ def extract_abstract_pair(abstract):
 
     return original_abstract, incorrect_abstract
 
+
+def extract_abstract_pair_isolated_sentences(abstract):
+    """
+    For the `eval_isolated_sentences` check, where 
+    we produce both correct and incorrect collections of 
+    sentences with choices (at least one) in them. In other words, 
+    the abstracts are now sentences with choices in them.
+    """
+    # Split the text into sentences
+    sentences = nltk.sent_tokenize(abstract)
+
+    # Initialize lists to store parsed sentences
+    original_collection = []
+    incorrect_collection = []
+
+    # Iterate through each sentence
+    for sentence in sentences:
+        # Check if the sentence contains [[ ]]
+        if '[[' in sentence and ']]' in sentence:
+            # Find all occurrences of [[x,y]] in the sentence
+            matches = re.findall(r'\[\[(.*?)\]\]', sentence)
+
+            # Iterate through all matches in the sentence
+            correct_sentence = sentence
+            incorrect_sentence = sentence
+            for match in matches:
+                # Split the match into two items
+                items = match.split(',')
+                
+                # For each sentence, parse out the correct and incorrect versions
+                correct_sentence = correct_sentence.replace('[[' + match + ']]', items[0].strip())
+                incorrect_sentence = incorrect_sentence.replace('[[' + match + ']]', items[1].strip())
+
+            # Add the parsed versions to the lists
+            original_collection.append(correct_sentence)
+            incorrect_collection.append(incorrect_sentence)
+
+    return original_collection, incorrect_collection
