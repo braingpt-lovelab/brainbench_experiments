@@ -37,6 +37,7 @@ if __name__ == "__main__":
     dataset_source = "j_of_neuro"
     llms = [
         "gpt2",
+         "finetune_gpt2",
         "gpt2_scratch_neuro_tokenizer"
     ]
 
