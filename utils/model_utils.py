@@ -13,6 +13,22 @@ def load_model_and_tokenizer(model_fpath, tokenizer_only=False):
     torch_dtype = torch.float16
 
 
+    if model_fpath in [
+            "full_finetune_mistral_7b_v01"
+        ]:
+        model_fpath = f"/home/ken/projects/full_finetuning/exp/{model_fpath}/checkpoint.0"
+        print("Loading model from", model_fpath)
+        model = transformers.AutoModelForCausalLM.from_pretrained(
+            model_fpath,
+            load_in_8bit=load_in_8bit,
+            device_map='auto',
+            torch_dtype=torch.bfloat16
+        )
+        tokenizer = transformers.AutoTokenizer.from_pretrained(
+            model_fpath,
+        )
+        
+
     # Load model trained from scratch from local checkpoint
     if model_fpath in [
             "gpt2_scratch",
