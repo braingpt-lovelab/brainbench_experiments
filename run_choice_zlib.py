@@ -79,6 +79,7 @@ if __name__ == "__main__":
 
     llms = [
         "gpt2",
+        "finetune_gpt2",
         "gpt2_scratch_neuro_tokenizer"
     ]
 
