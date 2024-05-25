@@ -34,11 +34,10 @@ def main(llm, dataset):
 if __name__ == "__main__":
     seed = 42
     n_samples = 1000
-    dataset_source = "arxiv_abstracts_20230601_20231231"
+    dataset_source = "j_of_neuro"
     llms = [
-        "tiiuae/falcon-180B",
-        "meta-llama/Llama-2-70b-hf",
-        "facebook/galactica-120b",
+        "gpt2",
+        "gpt2_scratch_neuro_tokenizer"
     ]
 
     data_sources = {
@@ -60,6 +59,10 @@ if __name__ == "__main__":
     elif dataset_source == "gettysburg_address":
         dataset = load_dataset("data", data_files="gettysburg_address.json")
         dataset = dataset["train"][:n_samples]["text"]
+
+    elif dataset_source == "j_of_neuro":
+        dataset = load_dataset("data", data_files="j_of_neuro_abstracts_2017_2022.json")
+        dataset = dataset.shuffle(seed=seed)["train"][:n_samples]["text"]
 
     for llm in llms:
         results_dir = f"model_results/{llm.replace('/', '--')}/{dataset_source}"
