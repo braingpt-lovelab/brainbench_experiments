@@ -133,22 +133,8 @@ if __name__ == "__main__":
         use_human_abstract = False
 
     llms = [
-        "meta-llama/Llama-2-7b-hf",
-        "meta-llama/Llama-2-13b-hf",
-        "meta-llama/Llama-2-70b-hf",
-        "tiiuae/falcon-40b",
-        "tiiuae/falcon-40b-instruct",
-        "meta-llama/Llama-2-7b-chat-hf",
-        "meta-llama/Llama-2-13b-chat-hf",
-        "meta-llama/Llama-2-70b-chat-hf",
-        "facebook/galactica-6.7b",
-        "facebook/galactica-30b",
-        "facebook/galactica-120b",
-        "finetune_llama2_chat_7b",
-        "mistralai/Mistral-7B-v0.1",
-        "mistralai/Mistral-7B-Instruct-v0.1",
-        "tiiuae/falcon-180B",
-        "tiiuae/falcon-180B-chat"
+        "gpt2",
+        "gpt2_scratch_neuro_tokenizer"
     ]
 
     for llm in llms:
