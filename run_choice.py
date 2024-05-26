@@ -133,9 +133,8 @@ if __name__ == "__main__":
         use_human_abstract = False
 
     llms = [
-        "gpt2",
-        "finetune_gpt2",
-        "gpt2_scratch_neuro_tokenizer"
+        "full_finetune_mistral_7b_v01",
+        # "mistralai/Mistral-7B-v0.1"
     ]
 
     for llm in llms:
