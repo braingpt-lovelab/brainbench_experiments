@@ -30,7 +30,7 @@ def load_model_and_tokenizer(model_fpath, tokenizer_only=False):
         
 
     # Load model trained from scratch from local checkpoint
-    if model_fpath in [
+    elif model_fpath in [
             "gpt2_scratch",
             "finetune_gpt2",
             "gpt2_scratch_neuro_tokenizer"
