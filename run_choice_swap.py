@@ -2,6 +2,7 @@ import os
 import argparse
 import json
 import nltk
+import torch
 import numpy as np
 import pandas as pd
 import torch.nn.functional as F 
@@ -125,12 +126,12 @@ def forward_pass(model, tokenizer, choices):
 
 
 @general_utils.timer
-def main(llm, abstracts_fpath):
+def main(llm, abstracts_fpath, seed):
     nltk.download('punkt')
-    np.random.seed(42)
+    np.random.seed(seed)
 
     # Load model, tokenizer
-    # model, tokenizer = model_utils.load_model_and_tokenizer(llm)
+    model, tokenizer = model_utils.load_model_and_tokenizer(llm)
 
     # Load dataset
     df = pd.read_csv(abstracts_fpath)
@@ -142,7 +143,6 @@ def main(llm, abstracts_fpath):
         subfield = row["journal_section"]
         testcase = row["combined_abstract"]
         original_abstract, incorrect_abstract = swap(abstract_index, testcase, subfield)
-        continue
 
         # Randomly shuffle to determine which abstract is A and which is B,
         # keep a record of the correct choice, which is used to determine
@@ -200,15 +200,30 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--use_human_abstract", type=str, default="True")
+    parser.add_argument("--seed", type=int, default=42)
+    args = parser.parse_args()
 
-    if parser.parse_args().use_human_abstract == "True":
+    if args.use_human_abstract == "True":
         use_human_abstract = True
     else:
         use_human_abstract = False
 
     llms = [
-        # "full_finetune_mistral_7b_v01",
-        "mistralai/Mistral-7B-v0.1"
+        "meta-llama/Llama-2-7b-hf",
+        "meta-llama/Llama-2-13b-hf",
+        "meta-llama/Llama-2-70b-hf",
+        "tiiuae/falcon-40b",
+        "tiiuae/falcon-40b-instruct",
+        "meta-llama/Llama-2-7b-chat-hf",
+        "meta-llama/Llama-2-13b-chat-hf",
+        "meta-llama/Llama-2-70b-chat-hf",
+        "facebook/galactica-6.7b",
+        "facebook/galactica-30b",
+        "facebook/galactica-120b",
+        "mistralai/Mistral-7B-v0.1",
+        "mistralai/Mistral-7B-Instruct-v0.1",
+        "tiiuae/falcon-180B",
+        "tiiuae/falcon-180B-chat"
     ]
 
     for llm in llms:
@@ -220,10 +235,10 @@ if __name__ == "__main__":
             type_of_abstract = 'llm_abstracts'
             abstracts_fpath = "testcases/BrainBench_GPT-4_v0.1.csv"
             swap_source_fpath = f"data/swap_{type_of_abstract}.json"
-        results_dir = f"model_results/{llm.replace('/', '--')}/{type_of_abstract}"
+        results_dir = f"model_results/{llm.replace('/', '--')}/{type_of_abstract}/swap_seed{args.seed}"
 
         if not os.path.exists(results_dir):
             os.makedirs(results_dir)
 
-        main(llm, abstracts_fpath)
+        main(llm, abstracts_fpath, args.seed)
     
