@@ -123,6 +123,7 @@ def main(llm, abstracts_fpath):
 if __name__ == "__main__":
     os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--use_human_abstract", type=str, default="True")
@@ -133,7 +134,11 @@ if __name__ == "__main__":
         use_human_abstract = False
 
     llms = [
-        "full_finetune_mistral_7b_v01",
+        # "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        # "microsoft/Phi-3-mini-4k-instruct",
+        # "microsoft/Phi-3-mini-128k-instruct"
+        # "full_finetune_mistral_7b_v01",
+        "lora_r256_a512_finetune_mistral_7b_v01",
         # "mistralai/Mistral-7B-v0.1"
     ]
 
