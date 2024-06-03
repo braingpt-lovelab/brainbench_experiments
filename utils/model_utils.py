@@ -1,3 +1,4 @@
+import json
 import transformers
 import torch
 
@@ -25,7 +26,31 @@ def load_model_and_tokenizer(model_fpath, tokenizer_only=False):
             torch_dtype=torch.bfloat16
         )
         tokenizer = transformers.AutoTokenizer.from_pretrained(
-            model_fpath,
+            "mistralai/Mistral-7B-v0.1"
+        )
+    
+    elif "lora_" in model_fpath:
+        import peft  # global import will default to using all GPUs.
+
+        model_config = f"/home/ken/projects/full_finetuning/exp/{model_fpath}/model_config.json"
+        model_fpath = f"/home/ken/projects/full_finetuning/exp/{model_fpath}/checkpoint.1"
+        # Load the base model
+        with open(model_config, "r") as f:
+            base_model_fpath = json.load(f)["model_path"]
+
+        model = transformers.AutoModelForCausalLM.from_pretrained(
+            base_model_fpath,
+            load_in_8bit=False,
+            device_map='auto',
+            torch_dtype=torch.bfloat16
+        )
+
+        # Load the PEFT model
+        peft_model_fpath = model_fpath
+        print("Loading PEFT model from", peft_model_fpath)
+        model = peft.PeftModel.from_pretrained(model, peft_model_fpath)
+        tokenizer = transformers.AutoTokenizer.from_pretrained(
+            base_model_fpath,
         )
         
 
