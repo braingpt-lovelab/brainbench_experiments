@@ -134,7 +134,8 @@ if __name__ == "__main__":
         use_human_abstract = False
 
     llms = [
-        "TinyLlama/TinyLlama_v1.1"
+        "lora_r16_a32_finetune_mistral_7b_v01",
+        # "TinyLlama/TinyLlama_v1.1"
         # "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
         # "microsoft/Phi-3-mini-4k-instruct",
         # "microsoft/Phi-3-mini-128k-instruct"
