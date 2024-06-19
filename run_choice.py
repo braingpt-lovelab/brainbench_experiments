@@ -135,14 +135,16 @@ if __name__ == "__main__":
 
     llms = [
         # "lora_r16_a32_finetune_mistral_7b_v01",
-        "lora_r32_a64_finetune_mistral_7b_v01",
+        # "lora_r32_a64_finetune_mistral_7b_v01",
         # "TinyLlama/TinyLlama_v1.1"
         # "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
         # "microsoft/Phi-3-mini-4k-instruct",
-        # "microsoft/Phi-3-mini-128k-instruct"
+        # "microsoft/Phi-3-mini-128k-instruct",
+        # "lora_r256_a512_finetune_phi3_mini_4k_instruct",
         # "full_finetune_mistral_7b_v01",
         # "lora_r256_a512_finetune_mistral_7b_v01",
         # "mistralai/Mistral-7B-v0.1"
+        "gpt2-medium_scratch_neuro_tokenizer",
     ]
 
     for llm in llms:

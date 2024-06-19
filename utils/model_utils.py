@@ -42,7 +42,8 @@ def load_model_and_tokenizer(model_fpath, tokenizer_only=False):
             base_model_fpath,
             load_in_8bit=False,
             device_map='auto',
-            torch_dtype=torch.bfloat16
+            torch_dtype=torch.bfloat16,
+            trust_remote_code=True
         )
 
         # Load the PEFT model
@@ -58,7 +59,9 @@ def load_model_and_tokenizer(model_fpath, tokenizer_only=False):
     elif model_fpath in [
             "gpt2_scratch",
             "finetune_gpt2",
-            "gpt2_scratch_neuro_tokenizer"
+            "gpt2_scratch_neuro_tokenizer",
+            "gpt2-medium_scratch_neuro_tokenizer",
+            "gpt2-large_scratch_neuro_tokenizer"
         ]:
         model_fpath = f"/home/ken/projects/matching_experts/model_training/exp/{model_fpath}/checkpoint.4"
         print("Loading GPT2 model from", model_fpath)
