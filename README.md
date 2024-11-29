@@ -12,7 +12,8 @@ conda env create -f conda_envs/environment.yml
 ### Reproducing experiments from scratch:
 1. Run inference with all LLMs on BrainBench test cases: `python run_choice.py --use_human_abstract <True|False>`.
 2. Run inference with all LLMs on BrainBench test cases under the **without context** condition: `python run_choice_iso.py --use_human_abstract <True|False>`.
-3. Run memorization analysis:
+3. Run inference with all LLMs on BrainBench test cases under the **swapped context** condition: `python run_choice_swap.py --use_human_abstract <True|False>`.
+4. Run memorization analysis:
     * First compile data from biorxiv and arxiv: `python compile_biorxiv.py` and `python compile_arxiv.py`. For now, need to manually adjust year range inside the scripts.
     * Run inference to obtain zlib entropy of BrainBench test cases: `python run_choice_zlib.py`.
     * Run inference to obtain zlib entropy and perplexity of all compiled data from biorxiv, arxiv and the Gettysburg Address: `python dataset_ppl_zlib.py`. For now, the choice of which data source to run needs to be set manually inside the script.
